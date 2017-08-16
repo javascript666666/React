@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="https://unpkg.com/react@latest/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@latest/dist/react-dom.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/jsx">
+     function NumberList(props) {
+      const numbers = props.numbers;
+      //当你创建一个元素时，必须包括一个特殊的key属性。元素的key在他的兄弟元素之间应该唯一
+      //Keys可以在DOM中的某些元素被增加或删除的时候帮助React识别哪些元素发生了变化。因此你应当给数组中的每一个元素赋予一个确定的标识。
+      //一个元素的key最好是这个元素在列表中拥有的一个独一无二的字符串。通常，我们使用来自数据的id作为元素的key
+      //元素的key只有在它和它的兄弟节点对比时才有意义。
+      const listItems = numbers.map((number) => 
+        <li key={number.toString()}>
+          {number}
+        </li>
+      )
+
+      return (
+        <ul>{listItems}</ul>
+      );
+     }
+
+     const numbers = [1, 2, 3, 4, 5];
+
+     //数组元素中使用的key在其兄弟之间应该是独一无二的。然而，它们不需要是全局唯一的
+     function Blog(props){
+      const sidebar = (
+        <ul>
+          {props.posts.map((post) => 
+            <li key={post.id}>
+              {post.title}
+            </li>
+          )}
+        </ul>
+      );
+      
+      const content = props.posts.map((post) => 
+        <div key={post.id}>
+          <h3>{post.title}</h3>
+          <p>{post.content}</p>
+        </div>
+      );
+
+      return (
+        <div>
+          <NumberList numbers={numbers} />,
+          {sidebar}
+          <hr />
+          {content}
+        </div>
+      )
+     }
+
+      const posts = [
+        {id: 1, title: 'Hello World', content: 'Welcome to learning React!'},
+        {id: 2, title: 'Installation', content: 'You can install React from npm.'}
+      ]
+
+
+     ReactDOM.render(
+        <Blog posts={posts} />,
+        document.getElementById('root')
+     )
+
+     //key会作为给React的提示，但不会传递给你的组件。如果您的组件中需要使用和key相同的值，请将其作为属性传递：
+    </script>
+  </body>
+</html>
+  

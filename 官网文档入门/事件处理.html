@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="https://unpkg.com/react@latest/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@latest/dist/react-dom.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/javascript">
+      // React 元素的事件处理和 DOM元素的很相似。但是有一点语法上的不同:
+      // React事件绑定属性的命名采用驼峰式写法，而不是小写。
+      // 如果采用 JSX 的语法你需要传入一个函数作为事件处理函数，而不是一个字符串(DOM元素的写法)
+      // 
+      // 传统的HTML  <button onclick = "activateLasers()">
+    </script>
+    <script type="text/babel">
+      class Toggle extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {isToggleOn: true};
+
+          //通常情况下，如果你没有在方法后面添加 () ，例如 onClick={this.handleClick}，你应该为这个方法绑定 this.
+          this.handleClick = this.handleClick.bind(this);
+        }
+
+        handleClick() {
+          this.setState(prevState => ({
+            isToggleOn: !prevState.isToggleOn
+          }));
+        }
+        
+        render() {
+          return (
+            <button onClick={this.handleClick}>
+              {this.state.isToggleOn? 'ON' : 'OF'}
+            </button>
+          );
+        }
+      }
+
+      //如果使用 bind 让你很困惑，这里有两种方式可以解决。如果你正在使用实验性的属性初始化器语法，你可以使用属性初始化器来正确的绑定回调函数：
+      class LoggingButton extends React.Component {
+        handleClick = () => {
+          console.log('this is:' ,this)
+        }
+
+      render() {
+          return (
+            <button onClick={this.handleClick}>
+              Click me
+            </button>
+          );
+        }
+      }
+
+
+      //如果你没有使用属性初始化器语法，你可以在回调函数中使用 箭头函数：
+      class LoggingButton2 extends React.Component {
+        handleClick() {
+          console.log('this is:', this);
+        }
+        
+        render() {
+         return (
+          <button onClick={(e) => this.handleClick(e)}>
+            Click me 2
+          </button>
+          );        
+        }
+      }
+
+      var element = (
+          <div>
+              <Toggle />
+              <LoggingButton />
+              <LoggingButton2 />
+          </div>
+      )
+
+      ReactDOM.render(
+        element,
+        document.getElementById('root')
+      )
+    </script>
+  </body>
+</html>
+  

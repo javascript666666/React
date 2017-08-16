@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="https://unpkg.com/react@latest/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@latest/dist/react-dom.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <style type="text/css">
+      fieldset {
+        width: 300px;
+        height: 100px;
+        border:1px dashed #ff9966;
+        text-align: center;
+      }
+      legend {
+        border:0px;
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/jsx">
+      function BoilingVerdict(props) {
+        if (props.celsius >= 100) {
+          return <p>水会烧开</p>;
+        }
+        return <p>水不会烧开</p>
+      }
+
+      class Calculator extends React.Component {
+        constructor(props){
+          super(props);
+          this.handleChange = this.handleChange.bind(this);
+          this.state = {temperature: ''};
+        }
+
+        handleChange(e){
+          this.setState({temperature: e.target.value});
+        }
+
+        render() {
+          const temperature = this.state.temperature;
+          return (
+            <fieldset className="fieldset">
+              <legend>输入一个摄氏温度</legend>
+              <input 
+                value={temperature}
+                onChange={this.handleChange}
+              />
+              <BoilingVerdict
+                celsius={parseFloat(temperature)}
+              />
+              <br/>
+              <div>
+                <TemperatureInput scale="c" />
+                <TemperatureInput scale="f" />
+              </div>
+            </fieldset>
+          )
+        }
+      }
+
+      const scaleNames = {
+        c: 'Celsius',
+        f: 'Fahrenheit'
+      }
+
+      class TemperatureInput extends React.Component {
+        constructor(props) {
+          super(props);
+          this.handleChange = this.handleChange.bind(this);
+          this.state = {temperature: ''};
+        }
+
+        handleChange(e) {
+          this.setState({temperature: e.target.value});
+        }
+
+        render() {
+          const temperature = this.state.temperature;
+          const scale = this.props.scale;
+          return(
+            <fieldset>
+              <legend>Enter temperature in {scaleNames[scale]}:</legend>
+              <input 
+                value={temperature}
+                onChange={this.handleChange}
+              />
+            </fieldset>
+          )
+        }
+      }
+      
+      //两个可以将摄氏度和华氏度互相转换的函数
+      function toCelsius(fahrenheit) {
+        return (fahrenheit - 32) * 5 / 9;
+      }
+
+      function toFahrenheit(celsius) {
+        return (celsius * 9 / 5) +32;
+      }
+      
+      //我们还需要另外一个函数，它接受两个参数，第一个接受字符串 temperature 变量，第二个参数则是上面编写的单位转换函数。最后会返回一个字符串。我们会使用它来根据一个输入框的输入计算出另一个输入框的值。
+      
+      function tryConvert(temperature, convert) {
+        const input = parseFloat(temperature);
+        if (Number.isNaN(input)) {
+          return '';
+        }
+        const output = convert(input);
+        const rounded = Math.round(out * 1000) / 1000;
+        return rounded.toString();
+      }
+      ReactDOM.render(
+        <Calculator />,
+        document.getElementById('root')
+      )
+    </script>
+  </body>
+</html>
+  
