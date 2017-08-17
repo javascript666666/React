@@ -110,11 +110,79 @@
           return '';
         }
         const output = convert(input);
-        const rounded = Math.round(out * 1000) / 1000;
+        const rounded = Math.round(output * 1000) / 1000;
         return rounded.toString();
       }
+      //状态提升 受控主件
+
+      class TemperatureInput2 extends React.Component {
+        constructor(props) {
+          super(props);
+          this.handleChange = this.handleChange.bind(this);
+        }
+
+        handleChange(e) {
+          this.props.onTemperatureChange(e.target.value);
+        }
+
+        render(){
+          const temperature = this.props.temperature;
+          const scale = this.props.scale;
+
+          return (
+            <fieldset>
+              <legend>在{scaleNames[scale]}:中输入温度数值</legend>
+              <input value={temperature}
+                     onChange={this.handleChange}/>
+            </fieldset>
+          );
+
+          //在React中，状态分享是通过将state数据提升至离需要这些数据的组件最近的父组件来完成的。这就是所谓的状态提升。我们会将 TemperatureInput 组件自身保存的 state 移到 Calculator 中。
+        }
+      }
+      
+      class Calculator2 extends React.Component {
+        constructor(props) {
+          super(props);
+          this.handleCelsiusChange = this.handleCelsiusChange.bind(this);
+          this.handleFahrenheitChange = this.handleFahrenheitChange.bind(this);
+          this.state = {temperature: '', scale: 'c'};
+        }
+
+        handleCelsiusChange(temperature) {
+          this.setState({scale: 'c', temperature});
+        }
+
+        handleFahrenheitChange(temperature) {
+          this.setState({scale: 'f', temperature});
+        }
+
+        render() {
+          const scale = this.state.scale;
+          const temperature = this.state.temperature;
+          const celsius = scale === 'f' ? tryConvert(temperature, toCelsius) : temperature
+          const fahrenheit = scale === 'c' ? tryConvert(temperature, toFahrenheit) : temperature;
+
+          return (
+            <div>
+              <TemperatureInput2 
+                scale="c"
+                temperature={celsius}
+                onTemperatureChange = {this.handleCelsiusChange} />
+              <TemperatureInput2 
+                scale="f"
+                temperature={fahrenheit}
+                onTemperatureChange={this.handleFahrenheitChange} />
+              <BoilingVerdict
+                celsius={parseFloat(celsius)} />
+            </div>
+          )
+        }
+      }
       ReactDOM.render(
-        <Calculator />,
+        <div> 
+           <Calculator2 />
+        </div>,
         document.getElementById('root')
       )
     </script>
